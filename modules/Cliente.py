@@ -90,12 +90,13 @@ class Cliente:
             else:
                 print(f'Você não possui saldo suficiente. \nSaldo atual: R${saldo[0]:.2f}.')
 
-        # uma exceção em caso de erro
-        except TypeError:
-            print('Informe os campos corretamente')
-
+        # exceções em caso de erro
         except sql.Error as erro:
             print(f'Ocorreu um erro ao realizar o saque do cliente {nome_cliente}: {erro}.')
+            return False
+        
+        except:
+            print('Informe os campos corretamente')
             return False
 
         else:
@@ -103,6 +104,51 @@ class Cliente:
             if saque:
                 print(f'Saque realizado com sucesso. \nSaldo atual: R${saldo_atual:.2f}')                
 
+        finally:
+            cursor.close() # fecha o cursor
+            banco.close() # fecha a conexão com o banco de dados
+
+    def depositar(nome_cliente, valor_deposito):
+        try:
+            # conectando no banco de dados
+            banco = sql.connect('banco.db')
+            cursor = banco.cursor() # cursor para executar comandos SQL
+            deposito = False # servepara fazer a verificação e exibir menssagem correta
+            
+            if valor_deposito > 0: # verifica se cliente não digitou um valor negativo ou zero
+                deposito = True
+
+                # pega o valor do saldo atual
+                cursor.execute("""
+                    SELECT valor FROM clientes
+                        WHERE nome = '{}';
+                """.format(nome_cliente))
+                banco.commit() # confirma as alterações
+                saldo = cursor.fetchone() # retorna o valor do saldo atual em tupla
+                saldo_atual = saldo[0] # acessa o índice da tupla
+                saldo_atual += valor_deposito # incrementa o valor do depósito
+
+                # atualiza o saldo do cliente
+                cursor.execute("""
+                    UPDATE clientes
+                    SET valor = {}
+                    WHERE nome = '{}';
+                    """.format(saldo_atual, nome_cliente))
+                banco.commit() # confirma as alterações
+            else:
+                print(f'R${valor_deposito} Não é um valor válido para depósito. Tente novamente.')
+
+        # exceções em caso de erro
+        except sql.Error as erro:
+            print(f'Ocorreu um erro ao realizar o saque do cliente {nome_cliente}: {erro}.')
+
+        except:
+            print('Informe os campos corretamente')
+
+        else:
+            # verifica se o saque foi feito
+            if deposito:
+                print(f'Depósito realizado com sucesso. \nSaldo atual: R${saldo_atual:.2f}')                
         finally:
             cursor.close() # fecha o cursor
             banco.close() # fecha a conexão com o banco de dados

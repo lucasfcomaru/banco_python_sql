@@ -29,9 +29,10 @@ while True:
                 print('''
 -----MENU GERÊNCIA-----
 1 - Consultar clientes
-2 - Cadastrar clientes
+2 - Cadastrar
 3 - Saque
-4 - Transferêcnia
+4 - Depósito
+5 - Transferêcnia
 0 - Voltar
                 ''')
                 menu_gerencia = input('Digite uma opção: ')
@@ -76,7 +77,9 @@ while True:
                             continue
                         else:
                             Cliente.sacar(nome_saque, valor_saque)
-                    case 4:
+                    case '4':
+                        Cliente.depositar('Jaiane Nunes', -300)
+                    case '5':
                         pass
                     case '0':
                         break
