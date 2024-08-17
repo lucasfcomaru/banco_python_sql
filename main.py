@@ -67,7 +67,15 @@ while True:
                                 continue
         
                     case '3':
-                        pass
+                        print('Informe os dados para saque')
+                        try:
+                            nome_saque = input('Nome do cliente: ')
+                            valor_saque = float(input('Digite o valor para o saque: '))
+                        except ValueError:
+                            print('Digite uma informação válida.')
+                            continue
+                        else:
+                            Cliente.sacar(nome_saque, valor_saque)
                     case 4:
                         pass
                     case '0':
