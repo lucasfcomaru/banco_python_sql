@@ -33,6 +33,7 @@ while True:
 3 - Saque
 4 - Depósito
 5 - Transferêcnia
+6 - Excluir
 0 - Voltar
                 ''')
                 menu_gerencia = input('Digite uma opção: ')
@@ -73,14 +74,48 @@ while True:
                             nome_saque = input('Nome do cliente: ')
                             valor_saque = float(input('Digite o valor para o saque: '))
                         except ValueError:
+                            print('Digite um valor válida.')
+                            continue
+                        except:
                             print('Digite uma informação válida.')
                             continue
                         else:
                             Cliente.sacar(nome_saque, valor_saque)
                     case '4':
-                        Cliente.depositar('Jaiane Nunes', -300)
+                        print('Informe os dados para depósito')
+                        try:
+                            nome_deposito = input('Nome do cliente: ')
+                            valor_deposito = float(input('Digite o valor para depósito: '))
+                        except ValueError:
+                            print('Digite um valor válida.')
+                            continue
+                        except:
+                            print('Digite uma informação válida.')
+                            continue
+                        else:
+                            Cliente.depositar(nome_deposito, valor_deposito)
                     case '5':
                         pass
+                    case '6':
+                        print('Informe os dados do cliente para exclusão')
+                        try:
+                            nome_excluir = input('Nome do cliente: ')
+                            confirm_excluir = input(f'Tem certeza que deseja excluir o usuário {nome_excluir}? [Y/N]: ')
+                            exclusao = False
+                            # verificação da confirmação
+                            if confirm_excluir in 'nN':
+                                print('Exclusão cancelada.')
+                                continue
+                            elif confirm_excluir in 'yY':
+                                exclusao = True # variável para fazer a verificação no else e executar o método
+
+                        except: 
+                            print('Algo de errado aconteceu. Tente novamente.')
+                            continue
+                        else:
+                            if exclusao:
+                                Cliente.excluir(nome_excluir)
+                                
                     case '0':
                         break
                     case _:

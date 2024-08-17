@@ -114,7 +114,7 @@ class Cliente:
             banco = sql.connect('banco.db')
             cursor = banco.cursor() # cursor para executar comandos SQL
             deposito = False # servepara fazer a verificação e exibir menssagem correta
-            
+
             if valor_deposito > 0: # verifica se cliente não digitou um valor negativo ou zero
                 deposito = True
 
@@ -149,6 +149,42 @@ class Cliente:
             # verifica se o saque foi feito
             if deposito:
                 print(f'Depósito realizado com sucesso. \nSaldo atual: R${saldo_atual:.2f}')                
+        finally:
+            cursor.close() # fecha o cursor
+            banco.close() # fecha a conexão com o banco de dados
+
+    def excluir(nome_cliente):
+        try:
+            # conectando no banco de dados
+            banco = sql.connect('banco.db')
+            cursor = banco.cursor() # cursor para executar comandos SQL
+            exclusao = False
+            # verifica se o cliente existe
+            cursor.execute("""
+                SELECT nome FROM clientes
+                    WHERE nome = '{}'
+            """.format(nome_cliente))
+            banco.commit()
+            cliente = cursor.fetchone() # retorna uma tupla
+
+            if cliente[0] == nome_cliente:
+                exclusao = True # usado pra fazer a verificação
+                # exclui o cliente
+                cursor.execute("""
+                    DELETE FROM clientes
+                        WHERE nome = '{}';
+                """.format(nome_cliente))
+                banco.commit() # confirma as alterações
+
+        # exceções em caso de erro
+        except sql.Error as erro:
+            print(f'Ocorreu um erro ao realizar a exclusão do cliente {nome_cliente}: {erro}.')
+        except:
+            print(f'Ocorreu um erro ao realizar a exclusão do cliente {nome_cliente}.')
+        else:
+            # verifica se exclusão foi feita
+            if exclusao:
+                print(f'O cliente {nome_cliente} foi excluído com sucesso.')
         finally:
             cursor.close() # fecha o cursor
             banco.close() # fecha a conexão com o banco de dados
