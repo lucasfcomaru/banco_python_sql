@@ -95,7 +95,7 @@ while True:
                         else:
                             Cliente.depositar(nome_deposito, valor_deposito)
                     case '5':
-                        pass
+                        Cliente.transferencia('Jaiane Nunes','Lucas Comaru', 100)
                     case '6':
                         print('Informe os dados do cliente para exclusão')
                         try:

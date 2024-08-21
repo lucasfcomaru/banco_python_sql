@@ -189,5 +189,72 @@ class Cliente:
             cursor.close() # fecha o cursor
             banco.close() # fecha a conexão com o banco de dados
 
-    def transferencia():
-        pass
+    def transferencia(conta_origem, conta_destino, valor):
+        try:
+            # conectando no banco de dados
+            banco = sql.connect('banco.db')
+            cursor = banco.cursor() # cursor para executar comandos SQL
+            transferir = False # servepara fazer a verificação e exibir menssagem correta
+
+            if valor > 0: # verifica se cliente não digitou um valor negativo ou zero
+                # pega o valor do saldo atual da conta de origem
+                cursor.execute("""
+                    SELECT valor FROM clientes
+                        WHERE nome = '{}';
+                """.format(conta_origem))
+                saldo_origem = cursor.fetchone() # retorna o valor do saldo atual em tupla
+
+                if valor <= saldo_origem[0]:
+                    transferir = True
+
+                    # pega o valor do saldo atual da conta de destino
+                    cursor.execute("""
+                        SELECT valor FROM clientes
+                            WHERE nome = '{}';
+                    """.format(conta_destino))
+                    saldo_destino = cursor.fetchone() # retorna o valor do saldo atual em tupla
+
+                    if saldo_destino:
+                    # atualiza o saldo da conta de origem
+                        saldo_o = saldo_origem[0] - valor # copiar o valor da tupla e subtrair o valor
+
+                        cursor.execute("""
+                            UPDATE clientes
+                            SET valor = {}
+                            WHERE nome = '{}';
+                        """.format(saldo_o, conta_origem))
+
+                        # atualiza o saldo da conta de destino
+                        saldo_d = saldo_destino[0] + valor # copiar o valor da tupla e soma o valor
+
+                        cursor.execute("""
+                            UPDATE clientes
+                            SET valor = {}
+                            WHERE nome = '{}';
+                        """.format(saldo_d, conta_destino))
+
+                        banco.commit() # confirma as alterações
+
+                    else:
+                        print(f'O cliente {conta_destino} não foi encontrado.')
+                elif valor > saldo_origem[0]:
+                    print(f'O cliente {conta_origem} não possui saldo suficiente.')
+            elif valor <= 0:
+                print(f'R${valor:.2f} não é um valor válido.')
+
+        # exceções em caso de erro
+        except sql.Error as erro:
+            print(f'Ocorreu um erro ao realizar transferência do cliente {conta_origem}: {erro}.')
+
+        except Exception as e:
+            print(f'Ocorreu um erro inesperado: {e}.')
+
+        else:
+            # verifica se a transferÊncia foi feita
+            if transferir:
+                print(f'Depósito realizado com sucesso.')                
+                print(f'Saldo atual do cliente {conta_origem}: R${saldo_o:.2f}')
+                print(f'Saldo atual do cliente {conta_destino}: R${saldo_d:.2f}')
+        finally:
+            cursor.close() # fecha o cursor
+            banco.close() # fecha a conexão com o banco de dados
