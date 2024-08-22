@@ -7,7 +7,7 @@ def login_user(user):
         cursor = banco.cursor() # cursor para executar comandos SQL
         #seleciona o usuário com base no parâmetro fornecido
         cursor.execute("""
-        SELECT user FROM gerente
+        SELECT id, user FROM gerente
             WHERE user = '{}'
             """.format(user))
         
@@ -18,7 +18,7 @@ def login_user(user):
         # retorna o primeiro resultado correspondente
         if resultado != None:
             print('Usuário verificado com sucesso.')
-            return True
+            return resultado[0] # id
         else:
             print('Usuário não existe.')
             return False
@@ -38,7 +38,7 @@ def login_password(password):
         cursor = banco.cursor() # cursor para executar comandos SQL
         #seleciona o usuário com base no parâmetro fornecido
         cursor.execute("""
-        SELECT password FROM gerente
+        SELECT id, password FROM gerente
             WHERE password = '{}'
             """.format(password))
         
@@ -49,7 +49,7 @@ def login_password(password):
         # retorna o primeiro resultado correspondente
         if resultado != None:
             print('Senha verificada com sucesso.')
-            return True
+            return resultado[0] # id
         else:
             print('Senha incorreta.')
             return False
@@ -67,14 +67,15 @@ def login_password(password):
 def login(user, password):
     try:
         # executa as funções e guarda o retorno
-        usuario = login_user(user)
-        senha = login_password(password)
+        usuario_id = login_user(user)
+        senha_id = login_password(password)
 
         # verifica se usuário e senha são verdadeiros
-        if usuario and senha:
+        if usuario_id == senha_id:
             print('Usuário logado com sucesso')
             return True
         else:
+            print('Usuário ou senha incorretos.')
             return False
     
     # uma exceção caso aconteção algum erro
