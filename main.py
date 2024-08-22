@@ -52,7 +52,7 @@ while True:
 
                         try:
                             # pega os dados do cliente e cria o objeto Cliente
-                            nome_cliente = input('Nome do cliente: ')
+                            nome_cliente = input('Nome do cliente: ').lower()
                             valor_cliente = float(input('Valor inicial: '))
                             
                         except ValueError:
@@ -71,7 +71,7 @@ while True:
                     case '3':
                         print('Informe os dados para saque')
                         try:
-                            nome_saque = input('Nome do cliente: ')
+                            nome_saque = input('Nome do cliente: ').lower()
                             valor_saque = float(input('Digite o valor para o saque: '))
                         except ValueError:
                             print('Digite um valor válida.')
@@ -84,22 +84,35 @@ while True:
                     case '4':
                         print('Informe os dados para depósito')
                         try:
-                            nome_deposito = input('Nome do cliente: ')
+                            nome_deposito = input('Nome do cliente: ').lower()
                             valor_deposito = float(input('Digite o valor para depósito: '))
                         except ValueError:
                             print('Digite um valor válida.')
                             continue
                         except:
-                            print('Digite uma informação válida.')
+                            print('Digite uma informação válido.')
                             continue
                         else:
                             Cliente.depositar(nome_deposito, valor_deposito)
                     case '5':
-                        Cliente.transferencia('Jaiane Nunes','Lucas Comaru', 100)
+                        print('Informe os dados para transferência')
+                        try:
+                            nome_origem = input('Nome da conta de origem: ').lower()
+                            valor_transferencia = float(input('Digite o valor da transferência: '))
+                            nome_destino = input('Nome da conta de destino: ').lower()
+                        except ValueError:
+                            print('Digite um valor válido.')
+                            continue
+                        except Exception as e:
+                            print(f'Algo de errado aconteceu: {e}')
+                            continue
+                        else:
+                            Cliente.transferencia(nome_origem, nome_destino, valor_transferencia)
+                            
                     case '6':
                         print('Informe os dados do cliente para exclusão')
                         try:
-                            nome_excluir = input('Nome do cliente: ')
+                            nome_excluir = input('Nome do cliente: ').lower()
                             confirm_excluir = input(f'Tem certeza que deseja excluir o usuário {nome_excluir}? [Y/N]: ')
                             exclusao = False
                             # verificação da confirmação
